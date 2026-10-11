@@ -1,0 +1,142 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Kvíz z přírodopisu</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700&display=swap">
+<style>
+/* Layout: one centered question card at a time, notebook-highlighter topic chips, score sheet at the end */
+:root{
+  --bg:#fbf6f8; --card:#ffffff; --fg:#2c2430; --muted:#76687a; --line:#eadde4;
+  --accent:#d6457f; --accent-ink:#fff;
+  --ok:#2f8f5b; --ok-bg:#e3f4ea; --bad:#c2413b; --bad-bg:#fbe5e3;
+  --t-zeme:#7b5ea7; --t-sfery:#2f8f7a; --t-zivot:#c98a12; --t-org:#d6457f; --t-vztahy:#3f78b5;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1d1720; --card:#2a222e; --fg:#f3eaf0; --muted:#b6a7b8; --line:#3d3342;
+  --accent:#f07aa8; --accent-ink:#2a0f1b;
+  --ok:#6fd39b; --ok-bg:#1f3a2b; --bad:#ff8f87; --bad-bg:#43211f;
+  --t-zeme:#b9a0e6; --t-sfery:#6fcfb9; --t-zivot:#f0c062; --t-org:#f07aa8; --t-vztahy:#88b5ea;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1d1720; --card:#2a222e; --fg:#f3eaf0; --muted:#b6a7b8; --line:#3d3342;
+  --accent:#f07aa8; --accent-ink:#2a0f1b;
+  --ok:#6fd39b; --ok-bg:#1f3a2b; --bad:#ff8f87; --bad-bg:#43211f;
+  --t-zeme:#b9a0e6; --t-sfery:#6fcfb9; --t-zivot:#f0c062; --t-org:#f07aa8; --t-vztahy:#88b5ea;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.5;padding-inline:16px;padding-block:20px 40px}
+.wrap{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,6vw,2.3rem);line-height:1.1;margin:0;text-wrap:balance}
+h1 span{background:linear-gradient(transparent 55%,color-mix(in srgb,var(--accent) 35%,transparent) 55%);padding:0 .1em}
+.sub{color:var(--muted);margin:0}
+.bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;gap:16px}
+.chip{align-self:flex-start;font-weight:700;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:99px;color:var(--c);background:color-mix(in srgb,var(--c) 16%,transparent)}
+.q{font-family:var(--display);font-weight:600;font-size:1.35rem;line-height:1.25;margin:0;text-wrap:balance}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{font:inherit;font-weight:600;text-align:left;color:var(--fg);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;gap:12px;align-items:center}
+.opt b{font-family:var(--display);width:28px;height:28px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--line);font-size:.95rem}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)} .opt.ok b{background:var(--ok);color:var(--card)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg)} .opt.bad b{background:var(--bad);color:var(--card)}
+.fb{border-radius:12px;padding:12px 14px;font-weight:600}
+.fb.ok{background:var(--ok-bg);color:var(--ok)} .fb.bad{background:var(--bad-bg);color:var(--bad)}
+.fb span{display:block;font-weight:400;color:var(--fg);margin-top:4px}
+.btn{font:inherit;font-family:var(--display);font-weight:800;font-size:1.05rem;border:0;border-radius:12px;padding:12px 20px;background:var(--accent);color:var(--accent-ink);cursor:pointer;align-self:flex-end}
+.btn.ghost{background:transparent;color:var(--accent);border:2px solid var(--accent)}
+.score{font-family:var(--display);font-weight:800;font-size:3.2rem;line-height:1;font-variant-numeric:tabular-nums}
+.grade{font-weight:700;font-size:1.1rem}
+.review{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.review li{border-left:4px solid var(--bad);padding:6px 0 6px 12px}
+.review small{color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.topics{display:flex;flex-wrap:wrap;gap:8px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Přírodopis <span>– opakování</span></h1>
+    <p class="sub">Prima · Země, sféry, život a vztahy mezi organismy</p>
+  </header>
+  <div>
+    <div class="meta"><span id="pos"></span><span id="pts"></span></div>
+    <div class="bar"><i id="prog"></i></div>
+  </div>
+  <main class="card" id="card" aria-live="polite"></main>
+</div>
+
+<script>
+const T={zeme:["Stavba Země","--t-zeme"],sfery:["Zemské sféry","--t-sfery"],zivot:["Život na Zemi","--t-zivot"],org:["Třídění organismů","--t-org"],vztahy:["Vztahy mezi organismy","--t-vztahy"]};
+const Q=[
+ {t:"zeme",q:"Která vrstva Země je úplně uprostřed a je velice žhavá?",o:["Jádro","Plášť","Zemská kůra"],a:0,e:"Jádro je ve středu Země a je velice žhavé (horké)."},
+ {t:"zeme",q:"Co je zemská kůra?",o:["Obal naší planety","Nejteplejší část Země","Vrstva pod pláštěm"],a:0,e:"Zemská kůra je vnější obal naší planety – žijeme na ní."},
+ {t:"zeme",q:"Která vrstva leží mezi jádrem a zemskou kůrou?",o:["Atmosféra","Plášť","Pedosféra"],a:1,e:"Pořadí od středu: jádro → plášť → zemská kůra."},
+ {t:"sfery",q:"Horniny a minerály patří do…",o:["hydrosféry","biosféry","litosféry"],a:2,e:"Litosféra = horniny a minerály."},
+ {t:"sfery",q:"Voda – domov ryb a vodních organismů – tvoří…",o:["hydrosféru","atmosféru","pedosféru"],a:0,e:"Hydrosféra = voda na Zemi."},
+ {t:"sfery",q:"Vzduch a mraky patří do…",o:["litosféry","atmosféry","biosféry"],a:1,e:"Atmosféra = vzduch a mraky kolem Země."},
+ {t:"sfery",q:"Všechny živé organismy na Zemi tvoří…",o:["biosféru","hydrosféru","litosféru"],a:0,e:"Biosféra = všechno živé."},
+ {t:"sfery",q:"Půda, která vzniká z odumřelých organismů, je…",o:["atmosféra","pedosféra","litosféra"],a:1,e:"Pedosféra = půda. Vzniká i z odumřelých organismů."},
+ {t:"sfery",q:"Kolik zemských sfér jsme se učili?",o:["3","4","5"],a:2,e:"Litosféra, pedosféra, hydrosféra, biosféra a atmosféra – celkem 5."},
+ {t:"zivot",q:"Co NEPATŘÍ mezi podmínky života na Zemi?",o:["Slunce","Vzduch","Kameny","Živiny"],a:2,e:"Podmínky života: slunce, voda, vzduch a živiny."},
+ {t:"zivot",q:"Dýchání, přijímání potravy a vylučování jsou příklady…",o:["rozmnožování","přeměny látek a energie","růstu a vývinu"],a:1,e:"Přeměna látek a energie = dýchání, potrava, vylučování."},
+ {t:"zivot",q:"Květina se natáčí ke slunci. Který znak živých organismů to ukazuje?",o:["Dráždivost a pohyb","Rozmnožování","Přeměnu látek"],a:0,e:"Dráždivost = reakce na změny. Natáčení ke slunci je reakce i pohyb."},
+ {t:"zivot",q:"Z malé rostlinky vyroste velký strom. Který je to znak?",o:["Dráždivost","Růst a vývin","Vylučování"],a:1,e:"Růst a vývin – organismus se zvětšuje a mění."},
+ {t:"zivot",tf:1,q:"Pravda, nebo ne? Rozmnožování je jeden ze znaků živých organismů.",o:["Pravda","Nepravda"],a:0,e:"Znaky: přeměna látek a energie, dráždivost a pohyb, rozmnožování, růst a vývin."},
+ {t:"org",q:"Viry jsou organismy…",o:["buněčné","nebuněčné"],a:1,e:"Viry nemají buňky – jsou nebuněčné."},
+ {t:"org",q:"Co NEPATŘÍ mezi buněčné organismy?",o:["Bakterie","Houby","Viry","Živočichové"],a:2,e:"Buněčné: bakterie, houby, rostliny, živočichové. Viry jsou nebuněčné."},
+ {t:"org",q:"Producenti jsou…",o:["rostliny","živočichové","houby"],a:0,e:"Producenti = rostliny. Vyrábějí potravu pomocí slunce a vody."},
+ {t:"org",q:"Konzumenti jsou…",o:["rostliny","živočichové","bakterie"],a:1,e:"Konzumenti = živočichové, živí se jinými organismy."},
+ {t:"org",q:"Králík se živí rostlinami. Je to…",o:["masožravec","všežravec","býložravec"],a:2,e:"Býložravci se živí rostlinami, např. králík."},
+ {t:"org",q:"Šelma (třeba vlk) je…",o:["masožravec","býložravec","rozkladač"],a:0,e:"Masožravci jedí masitou potravu, např. šelmy."},
+ {t:"org",q:"Lidé a prasata jedí rostlinnou i živočišnou potravu. Jsou to…",o:["býložravci","všežravci","producenti"],a:1,e:"Všežravci jedí rostlinnou i živočišnou potravu."},
+ {t:"vztahy",q:"Jmelí, veš, klíště a komár jsou…",o:["symbionti","rozkladači","paraziti"],a:2,e:"Parazit se přiživuje na jiném organismu."},
+ {t:"vztahy",q:"Strom a houba, nebo květina a včela si navzájem pomáhají. Jsou to…",o:["paraziti","symbionti","konzumenti"],a:1,e:"Symbionti = organismy, které si navzájem pomáhají."},
+ {t:"vztahy",q:"Žížala rozkládá odumřelé rostliny a živočichy. Je to…",o:["rozkladač","producent","parazit"],a:0,e:"Žížala je rozkladač."},
+ {t:"vztahy",q:"Co vytvářejí rozkladači?",o:["Atmosféru","Pedosféru (půdu)","Hydrosféru"],a:1,e:"Rozkladači vytvářejí pedosféru – půdu."},
+ {t:"vztahy",q:"Co je v potravní pyramidě hned nad půdou?",o:["Konzumenti","Producenti","Paraziti"],a:1,e:"Dole půda, nad ní producenti (rostliny), výš konzumenti."},
+ {t:"vztahy",tf:1,q:"Pravda, nebo ne? Rostliny (producenti) potřebují ke svému životu slunce a vodu.",o:["Pravda","Nepravda"],a:0,e:"Ano – slunce a voda jdou v pyramidě k producentům."}
+];
+const L="ABCD";let order,i,score,wrong;
+const $=id=>document.getElementById(id);
+function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.random()*(k+1)|0;[a[k],a[j]]=[a[j],a[k]]}return a}
+function start(){
+  order=shuffle(Q).map(q=>{if(q.tf)return{...q};const idx=shuffle(q.o.map((_,n)=>n));return{...q,o:idx.map(n=>q.o[n]),a:idx.indexOf(q.a)}});
+  i=0;score=0;wrong=[];show();
+}
+function head(){$("pos").textContent=`Otázka ${Math.min(i+1,order.length)} z ${order.length}`;$("pts").textContent=`Body: ${score}`;$("prog").style.width=(i/order.length*100)+"%"}
+function show(){
+  head();const q=order[i],[name,c]=T[q.t];
+  $("card").innerHTML=`<span class="chip" style="--c:var(${c})">${name}</span><p class="q">${q.q}</p>
+  <div class="opts">${q.o.map((o,n)=>`<button class="opt" id="o${n}" data-n="${n}"><b>${L[n]}</b>${o}</button>`).join("")}</div><div id="after"></div>`;
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(+b.dataset.n));
+}
+function pick(n){
+  const q=order[i],ok=n===q.a;
+  document.querySelectorAll(".opt").forEach(b=>{b.disabled=true;const m=+b.dataset.n;if(m===q.a)b.classList.add("ok");else if(m===n)b.classList.add("bad")});
+  if(ok)score++;else wrong.push(q);
+  $("after").innerHTML=`<div class="fb ${ok?"ok":"bad"}">${ok?"Správně!":"Tohle ne. Správně je: "+q.o[q.a]}<span>${q.e}</span></div>`;
+  const b=document.createElement("button");b.className="btn";b.id="next";b.textContent=i<order.length-1?"Další otázka":"Výsledek";
+  b.style.marginTop="14px";b.onclick=()=>{i++;i<order.length?show():end()};
+  const r=document.createElement("div");r.className="row";r.appendChild(b);$("after").appendChild(r);b.focus();
+  $("pts").textContent=`Body: ${score}`;
+}
+function end(){
+  head();$("prog").style.width="100%";$("pos").textContent="Hotovo";
+  const p=score/order.length,g=p>=.9?"1 – výborně!":p>=.75?"2 – chvalitebně":p>=.5?"3 – dobře":p>=.3?"4 – dostatečně":"5 – ještě zopakovat";
+  const weak=[...new Set(wrong.map(q=>q.t))];
+  $("card").innerHTML=`<div><div class="score">${score} / ${order.length}</div><div class="grade">Orientační známka: ${g}</div></div>
+  ${wrong.length?`<div><p style="margin:0 0 8px;font-weight:700">Co si zopakovat:</p><div class="topics">${weak.map(t=>`<span class="chip" style="--c:var(${T[t][1]})">${T[t][0]}</span>`).join("")}</div></div>
+  <ul class="review">${wrong.map(q=>`<li>${q.q}<br><strong>${q.o[q.a]}</strong> <small>– ${q.e}</small></li>`).join("")}</ul>`:`<p style="margin:0">Všechno správně, bez jediné chyby!</p>`}
+  <div class="row">${wrong.length?`<button class="btn ghost" id="retryWrong">Jen chybné otázky</button>`:""}<button class="btn" id="again">Znovu celý kvíz</button></div>`;
+  $("again").onclick=start;
+  if(wrong.length)$("retryWrong").onclick=()=>{order=shuffle(wrong);i=0;score=0;wrong=[];show()};
+}
+start();
+</script>
+
+</body></html>
